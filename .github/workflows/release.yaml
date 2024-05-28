@@ -1,0 +1,77 @@
+name: Release
+run-name: "Release (branch: ${{ github.ref_name }})"
+
+on:
+  workflow_dispatch: {}
+  schedule:
+    - cron: "0 10 * * *"
+  push:
+    branches:
+      - master
+
+jobs:
+  build-base-glibc:
+    runs-on: ubuntu-22.04
+    env:
+      ACR_URL: ${{ secrets.ACR_URL }}
+      ACR_USERNAME: ${{ secrets.ACR_USERNAME }}
+      ACR_PASSWORD: ${{ secrets.ACR_PASSWORD }}
+      DOCKER_USERNAME: pcm0
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+    steps:
+    - uses: actions/checkout@v4
+    - name: Podman
+      continue-on-error: false
+      run: |
+        podman pull docker.io/library/golang:alpine
+        podman pull docker.io/library/alpine:edge
+        podman build \
+        -f Dockerfile \
+        . \
+        -t oitacr.azurecr.io/pmartin47/build-base:glibc \
+        -t docker.io/pcm0/build-base:glibc \
+        --target glibc
+    - name: Push to Docker Hub
+      run: |
+        podman login $ACR_URL --username $ACR_USERNAME --password $ACR_PASSWORD
+        podman images | awk "/$ACR_URL\/pmartin47\/build-base/ { print \$1\":\"\$2 }" | xargs -I {} podman push {}
+        podman logout
+        podman login docker.io --username $DOCKER_USERNAME --password $DOCKER_PASSWORD
+        podman images | awk "/pcm0\/build-base/ { print \$1\":\"\$2 }" | xargs -I {} podman push {}
+        podman logout
+    - name: Docker System Prune
+      run: |
+        podman system prune --force --all
+
+  build-base-musl:
+    runs-on: ubuntu-22.04
+    env:
+      ACR_URL: ${{ secrets.ACR_URL }}
+      ACR_USERNAME: ${{ secrets.ACR_USERNAME }}
+      ACR_PASSWORD: ${{ secrets.ACR_PASSWORD }}
+      DOCKER_USERNAME: pcm0
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+    steps:
+    - uses: actions/checkout@v4
+    - name: Podman
+      continue-on-error: false
+      run: |
+        podman pull docker.io/library/golang:alpine
+        podman pull docker.io/library/alpine:edge
+        podman build \
+        -f Dockerfile \
+        . \
+        -t oitacr.azurecr.io/pmartin47/build-base:musl \
+        -t docker.io/pcm0/build-base:musl \
+        --target musl
+    - name: Push to Docker Hub
+      run: |
+        podman login $ACR_URL --username $ACR_USERNAME --password $ACR_PASSWORD
+        podman images | awk "/$ACR_URL\/pmartin47\/build-base/ { print \$1\":\"\$2 }" | xargs -I {} podman push {}
+        podman logout
+        podman login docker.io --username $DOCKER_USERNAME --password $DOCKER_PASSWORD
+        podman images | awk "/pcm0\/build-base/ { print \$1\":\"\$2 }" | xargs -I {} podman push {}
+        podman logout
+    - name: Docker System Prune
+      run: |
+        podman system prune --force --all
