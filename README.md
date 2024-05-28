@@ -1,3 +1,6 @@
+[![Release](https://github.com/PaulChristophel/build-base/actions/workflows/release.yaml/badge.svg)](https://github.com/PaulChristophel/build-base/actions/workflows/release.yaml)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+
 # Build-Base
 
 Build-Base is a Docker-based project designed to create base build images for projects that have a Go backend and a JavaScript frontend. This project provides a standardized environment for building and deploying applications using either `musl` or `glibc`.
