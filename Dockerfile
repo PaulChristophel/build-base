@@ -1,7 +1,7 @@
 # Create the base build image
 FROM node:22-alpine AS base-node-musl
 RUN npm install -g pnpm
-FROM golang:alpine AS base-musl
+FROM golang:alpine AS musl
 COPY --from=base-node-musl /usr/local /usr/local
 WORKDIR /usr/src/app
 RUN apk upgrade --update --no-cache
@@ -11,7 +11,7 @@ RUN go install github.com/swaggo/swag/cmd/swag@latest
 # Create the base build image
 FROM node:22-bookworm AS base-node-glibc
 RUN npm install -g pnpm
-FROM golang:bookworm AS base-glibc
+FROM golang:bookworm AS glibc
 COPY --from=base-node-glibc /usr/local /usr/local
 WORKDIR /usr/src/app
 ENV DEBIAN_FRONTEND=noninteractive
