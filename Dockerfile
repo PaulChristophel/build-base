@@ -16,5 +16,5 @@ COPY --from=base-node-glibc /usr/local /usr/local
 WORKDIR /usr/src/app
 ENV DEBIAN_FRONTEND=noninteractive
 ENV APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1
-RUN apt update && apt upgrade -y && apt install -y curl git make tzdata ca-certificates build-essential && curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.60.3
+RUN apt update && apt upgrade -y && apt install -y curl git make tzdata ca-certificates build-essential && curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.61.0
 RUN go install github.com/swaggo/swag/cmd/swag@latest
