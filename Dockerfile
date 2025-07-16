@@ -1,5 +1,5 @@
 # Create the base build image
-FROM --platform=amd64 node:24.4.0-alpine3.22 AS base-node-musl
+FROM --platform=amd64 node:24.4.1-alpine3.22 AS base-node-musl
 RUN npm install -g pnpm
 FROM --platform=amd64 golang:1.24.5-alpine3.22 AS musl
 COPY --from=base-node-musl /usr/local /usr/local
@@ -9,7 +9,7 @@ RUN apk add --update --no-cache make tzdata ca-certificates build-base golangci-
 RUN go install github.com/swaggo/swag/cmd/swag@latest
 
 # Create the base build image
-FROM --platform=amd64 node:24.4.0-bookworm AS base-node-glibc
+FROM --platform=amd64 node:24.4.1-bookworm AS base-node-glibc
 RUN npm install -g pnpm
 FROM --platform=amd64 golang:1.24.5-bookworm AS glibc
 COPY --from=base-node-glibc /usr/local /usr/local
