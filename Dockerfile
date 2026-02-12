@@ -1,7 +1,7 @@
 # Create the base build image
-FROM --platform=amd64 node:25.6.1-alpine3.22 AS base-node-musl
+FROM --platform=amd64 node:25.6.0-alpine3.23 AS base-node-musl
 RUN npm install -g pnpm
-FROM --platform=amd64 golang:1.26.0-alpine3.22 AS musl
+FROM --platform=amd64 golang:1.26.0-alpine3.23 AS musl
 COPY --from=base-node-musl /usr/local /usr/local
 WORKDIR /usr/src/app
 RUN apk upgrade --update --no-cache
