@@ -1,7 +1,7 @@
 # Create the base build image
 FROM --platform=amd64 node:25.9.0-alpine3.23 AS base-node-musl
 RUN npm install -g pnpm
-FROM --platform=amd64 golang:1.26.1-alpine3.23 AS musl
+FROM --platform=amd64 golang:1.26.2-alpine3.23 AS musl
 COPY --from=base-node-musl /usr/local /usr/local
 WORKDIR /usr/src/app
 RUN apk upgrade --update --no-cache
@@ -11,7 +11,7 @@ RUN go install github.com/swaggo/swag/cmd/swag@latest
 # Create the base build image
 FROM --platform=amd64 node:25.9.0-trixie AS base-node-glibc
 RUN npm install -g pnpm
-FROM --platform=amd64 golang:1.26.1-trixie AS glibc
+FROM --platform=amd64 golang:1.26.2-trixie AS glibc
 COPY --from=base-node-glibc /usr/local /usr/local
 WORKDIR /usr/src/app
 ENV DEBIAN_FRONTEND=noninteractive
