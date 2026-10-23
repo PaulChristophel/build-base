@@ -1,7 +1,7 @@
 # Create the base build image
-FROM --platform=amd64 node:26.12.0-alpine3.24 AS base-node-musl
+FROM --platform=amd64 node:26.12.1-alpine3.24 AS base-node-musl
 RUN npm install -g pnpm
-FROM --platform=amd64 golang:1.27.2-alpine3.24 AS musl
+FROM --platform=amd64 golang:1.27.3-alpine3.24 AS musl
 COPY --from=base-node-musl /usr/local /usr/local
 WORKDIR /usr/src/app
 RUN apk upgrade --update --no-cache
@@ -9,9 +9,9 @@ RUN apk add --update --no-cache curl make tzdata ca-certificates build-base git 
 RUN go install github.com/swaggo/swag/cmd/swag@latest
 
 # Create the base build image
-FROM --platform=amd64 node:26.12.0-trixie AS base-node-glibc
+FROM --platform=amd64 node:26.12.1-trixie AS base-node-glibc
 RUN npm install -g pnpm
-FROM --platform=amd64 golang:1.27.2-trixie AS glibc
+FROM --platform=amd64 golang:1.27.3-trixie AS glibc
 COPY --from=base-node-glibc /usr/local /usr/local
 WORKDIR /usr/src/app
 ENV DEBIAN_FRONTEND=noninteractive
